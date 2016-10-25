@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<application xmlns="http://ns.adobe.com/air/application/23.0">
+	
+	<id>com.appodeal.test</id>
+	<versionNumber>0.1</versionNumber>
+	<supportedProfiles>mobileDevice</supportedProfiles>
+	<filename>AppodealDemo</filename>
+	
+	<name>AppodealDemo</name>
+	<description></description>
+	<copyright></copyright>
+	
+	<extensions>
+        <extensionID>com.appodeal.aneplugin</extensionID>
+        <extensionID>com.appodeal.playservicesane</extensionID>
+        <extensionID>com.appodeal.supportane</extensionID>
+    </extensions>
+	
+	<android>
+		<manifestAdditions><![CDATA[
+			
+			<manifest android:installLocation="auto">
+			  <uses-sdk android:minSdkVersion="9"/>
+				<uses-permission android:name="android.permission.INTERNET"/>
+				<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+				<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+				<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+				<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+				<uses-feature android:required="true" android:name="android.hardware.touchscreen.multitouch"/>
+				<application>
+					<meta-data android:name="com.appodeal.framework" android:value="air" />
+					<receiver android:name="com.appodeal.ads.AppodealPackageAddedReceiver" android:exported="true" android:enabled="true">
+					<intent-filter>
+						<action android:name="android.intent.action.PACKAGE_ADDED" />
+						<data android:scheme="package" />
+					</intent-filter>
+					</receiver>
+
+					<activity android:name="com.appodeal.ads.InterstitialActivity"
+						  android:configChanges="orientation|screenSize"
+						  android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+					<activity android:name="com.appodeal.ads.VideoActivity"
+						  android:configChanges="orientation|screenSize"
+						  android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+					<activity android:name="com.appodeal.ads.LoaderActivity"
+						  android:configChanges="orientation|screenSize"
+						  android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+					<meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+
+					<activity android:name="com.google.android.gms.ads.AdActivity"
+						  android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+						  android:theme="@android:style/Theme.Translucent" />
+
+					<activity android:name="com.chartboost.sdk.CBImpressionActivity" android:excludeFromRecents="true"
+						  android:hardwareAccelerated="true" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+						  android:configChanges="keyboardHidden|orientation|screenSize" />
+
+					<activity android:name="com.applovin.adview.AppLovinInterstitialActivity"
+						  android:theme="@android:style/Theme.Translucent" />
+
+					<activity android:name="com.mopub.mobileads.MoPubActivity"
+						  android:configChanges="keyboardHidden|orientation|screenSize"
+						  android:theme="@android:style/Theme.Translucent" />
+					<activity android:name="com.mopub.common.MoPubBrowser"
+						  android:configChanges="keyboardHidden|orientation|screenSize" />
+					<activity android:name="com.mopub.mobileads.MraidActivity"
+						  android:configChanges="keyboardHidden|orientation|screenSize" />
+					<activity android:name="com.mopub.mobileads.MraidVideoPlayerActivity"
+						  android:configChanges="keyboardHidden|orientation|screenSize" />
+
+					<activity android:name="org.nexage.sourcekit.mraid.MRAIDBrowser"
+						  android:configChanges="orientation|keyboard|keyboardHidden|screenSize"
+						  android:theme="@android:style/Theme.Translucent" />
+
+
+					<activity android:name="com.amazon.device.ads.AdActivity" android:configChanges="keyboardHidden|orientation|screenSize"/>
+
+					<activity android:name="com.my.target.ads.MyTargetActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
+
+					<activity android:name="org.nexage.sourcekit.vast.activity.VASTActivity"
+						  android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+
+					<activity android:name="org.nexage.sourcekit.vast.activity.VPAIDActivity"
+						  android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+
+					<!--suppress AndroidDomInspection -->
+					<activity android:name="com.appodeal.ads.networks.vpaid.VPAIDActivity"
+						  android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+
+					<activity android:name="com.appodeal.ads.networks.SpotXActivity"
+						  android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
+					<!--suppress AndroidDomInspection -->
+					<activity android:name="com.facebook.ads.InterstitialAdActivity" android:configChanges="keyboardHidden|orientation|screenSize" />
+
+					<activity android:name="com.unity3d.ads.adunit.AdUnitActivity"
+						android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen"
+						android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:hardwareAccelerated="true" />
+					<activity android:name="com.unity3d.ads.adunit.AdUnitSoftwareActivity"
+						android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen"
+						android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:hardwareAccelerated="false" />
+					<activity android:name="com.unity3d.ads2.adunit.AdUnitActivity"
+						android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen"
+						android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:hardwareAccelerated="true" />
+					<activity android:name="com.unity3d.ads2.adunit.AdUnitSoftwareActivity"
+						android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen"
+						android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:hardwareAccelerated="false" />
+
+
+					<!--suppress AndroidDomInspection -->
+					<activity android:name="com.jirbo.adcolony.AdColonyOverlay"
+						  android:configChanges="keyboardHidden|orientation|screenSize"
+						  android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+					<!--suppress AndroidDomInspection -->
+					<activity android:name="com.jirbo.adcolony.AdColonyFullscreen"
+						  android:configChanges="keyboardHidden|orientation|screenSize"
+						  android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+					<!--suppress AndroidDomInspection -->
+					<activity android:name="com.jirbo.adcolony.AdColonyBrowser"
+						  android:configChanges="keyboardHidden|orientation|screenSize"
+						  android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+					<!--suppress AndroidDomInspection -->
+					<activity android:name="com.vungle.publisher.FullScreenAdActivity"
+						  android:configChanges="keyboardHidden|orientation|screenSize"
+						  android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
+					<!--suppress AndroidDomInspection -->
+					<activity android:name="com.startapp.android.publish.list3d.List3DActivity"
+						  android:theme="@android:style/Theme" />
+					<!--suppress AndroidDomInspection -->
+					<activity android:name="com.startapp.android.publish.OverlayActivity"
+						  android:theme="@android:style/Theme.Translucent"
+						  android:configChanges="orientation|keyboardHidden|screenSize" />
+					<!--suppress AndroidDomInspection -->
+					<activity android:name="com.startapp.android.publish.FullScreenActivity"
+						  android:theme="@android:style/Theme"
+						  android:configChanges="orientation|keyboardHidden|screenSize" />
+					<service android:name="com.yandex.metrica.MetricaService" android:enabled="true"
+						 android:exported="true" android:process=":Metrica">
+						<intent-filter>
+							<category android:name="android.intent.category.DEFAULT" />
+							<action android:name="com.yandex.metrica.IMetricaService" />
+							<data android:scheme="metrica" />
+						</intent-filter>
+						<meta-data android:name="metrica:api:level" android:value="44" />
+					</service>
+					<receiver android:name="com.yandex.metrica.MetricaEventHandler"
+						  android:enabled="true" android:exported="true">
+						<intent-filter>
+							<action android:name="com.android.vending.INSTALL_REFERRER" />
+						</intent-filter>
+					</receiver>
+					<!--suppress AndroidDomInspection -->
+					<activity android:name="com.yandex.mobile.ads.AdActivity"
+						  android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
+
+					<!--suppress AndroidDomInspection -->
+					<activity android:name="com.flurry.android.FlurryFullscreenTakeoverActivity"
+						  android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
+
+					<activity android:name="com.appodeal.ads.VideoPlayerActivity" android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"/>
+
+					<!--suppress AndroidDomInspection -->
+					<activity android:name="com.revmob.FullscreenActivity" android:theme="@android:style/Theme.Translucent"
+						android:configChanges="keyboardHidden|orientation"/>
+
+					<!--suppress AndroidDomInspection -->
+					<activity android:name="com.tapjoy.TJAdUnitActivity" android:configChanges="orientation|keyboardHidden|screenSize"
+								android:hardwareAccelerated="true" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+					<!--suppress AndroidDomInspection -->
+					<activity android:name="com.tapjoy.mraid.view.ActionHandler" android:configChanges="orientation|keyboardHidden|screenSize" />
+					<!--suppress AndroidDomInspection -->
+					<activity android:name="com.tapjoy.mraid.view.Browser" android:configChanges="orientation|keyboardHidden|screenSize" />
+					<!--suppress AndroidDomInspection -->
+					<activity android:name="com.tapjoy.TJContentActivity" android:configChanges="orientation|keyboardHidden|screenSize"
+								android:theme="@android:style/Theme.Translucent.NoTitleBar" android:hardwareAccelerated="true" />
+				</application>
+			</manifest>
+			
+		]]></manifestAdditions>
+	</android>
+    <iPhone> 
+        <InfoAdditions><![CDATA[ 
+		
+			<key>UIStatusBarStyle</key> 
+			<string>UIStatusBarStyleBlackOpaque</string> 
+			<key>UIRequiresPersistentWiFi</key> 
+			<string>NO</string>
+			<key>UIPrerenderedIcon</key>  
+			<true/>
+			<key>UIApplicationExitsOnSuspend</key>
+			<true/>
+			
+			<key>UIDeviceFamily</key>
+			<array>
+				<!-- iPhone support -->
+				<string>1</string> 
+				<!-- iPad support -->
+				<!--<string>2</string>-->
+			</array>
+				
+        ]]></InfoAdditions> 
+		<requestedDisplayResolution>high</requestedDisplayResolution>
+    </iPhone> 
+	
+	<initialWindow>
+		<title>AppodealDemo</title>
+		<content>AppodealDemo.swf</content>
+		<visible>true</visible>
+		<fullScreen>true</fullScreen>
+		<!--<autoOrients>false</autoOrients>-->
+		<!--<aspectRatio>landscape</aspectRatio>-->
+		<renderMode>direct</renderMode>
+		<!--<depthAndStencil>true</depthAndStencil>--> <!-- required for 3D -->
+	</initialWindow>
+	
+	<icon>
+		<image48x48>icons/icon_48.png</image48x48>
+		<image57x57>icons/icon_57.png</image57x57>
+		<image72x72>icons/icon_72.png</image72x72>
+		<image76x76>icons/icon_76.png</image76x76>
+		<image96x96>icons/icon_96.png</image96x96>
+		<image114x114>icons/icon_114.png</image114x114>
+		<image120x120>icons/icon_120.png</image120x120>
+		<image144x144>icons/icon_144.png</image144x144>
+		<image152x152>icons/icon_152.png</image152x152>
+		<!--<image512x512>icons/icon_512.png</image512x512>-->
+	</icon>
+	
+	<!-- 
+	AIR options:
+	http://livedocs.adobe.com/flex/3/html/File_formats_1.html#1043413
+	
+	AIR mobile options:
+	http://help.adobe.com/en_US/air/build/WSfffb011ac560372f-5d0f4f25128cc9cd0cb-7ffe.html
+	
+	iOS icons guidelines:
+	http://developer.apple.com/library/ios/#documentation/userexperience/conceptual/mobilehig/IconsImages/IconsImages.html
+	
+	Android manifest documentation:
+	http://developer.android.com/guide/topics/manifest/manifest-intro.html
+	-->
+</application>
