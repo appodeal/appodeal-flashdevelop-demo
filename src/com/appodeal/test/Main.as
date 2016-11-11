@@ -33,6 +33,7 @@ package com.appodeal.test
 		private var showInterstitialButton:NetBtn = new NetBtn("Show interstitial");
 		private var showRewardedVideoButton:NetBtn = new NetBtn("Show rewarded video");
 		private var showInterstitialOrVideoButton:NetBtn = new NetBtn("Show interstitial or video");
+		private var interstitialState:int = 0; //0 - not loaded; 1 - loading; 2 - loaded
 		
 		public function Main() 
 		{
@@ -96,6 +97,7 @@ package com.appodeal.test
             appodeal.setSmartBanners(false);
             appodeal.setBannerAnimation(false);
             appodeal.setBannerBackground(true);
+			appodeal.setAutoCache(Appodeal.INTERSTITIAL, false);
 			
 			appodeal.initialize("fee50c333ff3825fd6ad6d38cff78154de3025546d47a84f", AdType.BANNER | AdType.INTERSTITIAL | AdType.REWARDED_VIDEO | AdType.SKIPPABLE_VIDEO);
 			
@@ -129,11 +131,21 @@ package com.appodeal.test
 		}
 		
 		private function showInterstitial(event:MouseEvent):void{
-			appodeal.show(AdType.INTERSTITIAL);
+			if(interstitialState == 0)
+			{
+				appodeal.cache(Appodeal.INTERSTITIAL);
+				interstitialState = 1;
+			}
+			if(interstitialState == 2)
+			{
+				appodeal.showWithPlacement(Appodeal.INTERSTITIAL, "interstitial");
+				interstitialState = 0;
+			}
 		}
 		
 		private function showRewarded(event:MouseEvent):void{
-			appodeal.show(AdType.REWARDED_VIDEO);
+			if(appodeal.isLoaded(Appodeal.REWARDED_VIDEO))
+				appodeal.show(AdType.REWARDED_VIDEO);
 		}
 		
 		private function showInterstitialOrVideo(event:MouseEvent):void{
@@ -222,9 +234,11 @@ package com.appodeal.test
         {
             switch (event.type) {
                 case AdEvent.INTERSTITIAL_LOADED:
+					interstitialState = 2;
                     trace('onInterstitial: ad loaded');
                     break;
                 case AdEvent.INTERSTITIAL_FAILED_TO_LOAD:
+					interstitialState = 0;
                     trace('onInterstitial: failed to load ad');
                     break;
                 case AdEvent.INTERSTITIAL_SHOWN:
