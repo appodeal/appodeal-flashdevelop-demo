@@ -32,7 +32,6 @@ package com.appodeal.test
 		private var hideBannerButton:NetBtn = new NetBtn("Hide banner");
 		private var showInterstitialButton:NetBtn = new NetBtn("Show interstitial");
 		private var showRewardedVideoButton:NetBtn = new NetBtn("Show rewarded video");
-		private var showInterstitialOrVideoButton:NetBtn = new NetBtn("Show interstitial or video");
 		private var interstitialState:int = 0; //0 - not loaded; 1 - loading; 2 - loaded
 		
 		public function Main() 
@@ -59,7 +58,7 @@ package com.appodeal.test
 		
 		private function createUI():void{
 			
-			var buttons:Array = new Array(initializeButton, showBannerButton, hideBannerButton, showInterstitialButton, showRewardedVideoButton, showInterstitialOrVideoButton);
+			var buttons:Array = new Array(initializeButton, showBannerButton, hideBannerButton, showInterstitialButton, showRewardedVideoButton);
 			
 			var paddingTop:int = 10;
 			var currentY:int = paddingTop;
@@ -76,7 +75,6 @@ package com.appodeal.test
 			hideBannerButton.addEventListener(MouseEvent.CLICK, hideBanner);
 			showInterstitialButton.addEventListener(MouseEvent.CLICK, showInterstitial);
 			showRewardedVideoButton.addEventListener(MouseEvent.CLICK, showRewarded);
-			showInterstitialOrVideoButton.addEventListener(MouseEvent.CLICK, showInterstitialOrVideo);
 		}
 		
 		private function initialize(event:MouseEvent):void{
@@ -99,23 +97,19 @@ package com.appodeal.test
             appodeal.setBannerBackground(true);
 			appodeal.setAutoCache(Appodeal.INTERSTITIAL, false);
 			
-			appodeal.initialize("fee50c333ff3825fd6ad6d38cff78154de3025546d47a84f", AdType.BANNER | AdType.INTERSTITIAL | AdType.REWARDED_VIDEO | AdType.SKIPPABLE_VIDEO);
+			appodeal.initialize("fee50c333ff3825fd6ad6d38cff78154de3025546d47a84f", AdType.BANNER | AdType.INTERSTITIAL | AdType.REWARDED_VIDEO);
 			
 			appodeal.addEventListener(AdEvent.INTERSTITIAL_LOADED, onInterstitial);
             appodeal.addEventListener(AdEvent.INTERSTITIAL_FAILED_TO_LOAD, onInterstitial);
             appodeal.addEventListener(AdEvent.INTERSTITIAL_SHOWN, onInterstitial);
             appodeal.addEventListener(AdEvent.INTERSTITIAL_CLICKED, onInterstitial);
             appodeal.addEventListener(AdEvent.INTERSTITIAL_CLOSED, onInterstitial);
+			appodeal.addEventListener(AdEvent.INTERSTITIAL_FINISHED, onInterstitial);
             appodeal.addEventListener(AdEvent.REWARDED_VIDEO_LOADED, onRewardedVideo);
             appodeal.addEventListener(AdEvent.REWARDED_VIDEO_FAILED_TO_LOAD, onRewardedVideo);
             appodeal.addEventListener(AdEvent.REWARDED_VIDEO_SHOWN, onRewardedVideo);
             appodeal.addEventListener(AdEvent.REWARDED_VIDEO_FINISHED, onRewardedVideo);
             appodeal.addEventListener(AdEvent.REWARDED_VIDEO_CLOSED, onRewardedVideo);
-            appodeal.addEventListener(AdEvent.SKIPPABLE_VIDEO_LOADED, onSkippableVideo);
-            appodeal.addEventListener(AdEvent.SKIPPABLE_VIDEO_FAILED_TO_LOAD, onSkippableVideo);
-            appodeal.addEventListener(AdEvent.SKIPPABLE_VIDEO_SHOWN, onSkippableVideo);
-            appodeal.addEventListener(AdEvent.SKIPPABLE_VIDEO_CLOSED, onSkippableVideo);
-            appodeal.addEventListener(AdEvent.SKIPPABLE_VIDEO_FINISHED, onSkippableVideo);
             appodeal.addEventListener(AdEvent.BANNER_LOADED, onBanner);
             appodeal.addEventListener(AdEvent.BANNER_FAILED_TO_LOAD, onBanner);
             appodeal.addEventListener(AdEvent.BANNER_SHOWN, onBanner);
@@ -148,10 +142,6 @@ package com.appodeal.test
 				appodeal.show(AdType.REWARDED_VIDEO);
 		}
 		
-		private function showInterstitialOrVideo(event:MouseEvent):void{
-			appodeal.show(AdType.INTERSTITIAL | AdType.SKIPPABLE_VIDEO);
-		}
-		
 		private function onNonSkippableVideo(event:AdEvent):void
         {
             switch (event.type) {
@@ -169,26 +159,6 @@ package com.appodeal.test
                     break;
                 case AdEvent.NON_SKIPPABLE_VIDEO_CLOSED:
                     trace('onNonSkippableVideo: ad closed');
-                    break;
-            }
-        }
-        private function onSkippableVideo(event:AdEvent):void
-        {
-            switch (event.type) {
-                case AdEvent.SKIPPABLE_VIDEO_LOADED:
-                    trace('onSkippableVideo: ad loaded');
-                    break;
-                case AdEvent.SKIPPABLE_VIDEO_FAILED_TO_LOAD:
-                    trace('onSkippableVideo: failed to load ad');
-                    break;
-                case AdEvent.SKIPPABLE_VIDEO_SHOWN:
-                    trace('onSkippableVideo: ad shown');
-                    break;
-                case AdEvent.SKIPPABLE_VIDEO_FINISHED:
-                    trace('onSkippableVideo: ad clicked, your reward:', event.amount, event.name);
-                    break;
-                case AdEvent.SKIPPABLE_VIDEO_CLOSED:
-                    trace('onSkippableVideo: ad closed');
                     break;
             }
         }
@@ -250,6 +220,10 @@ package com.appodeal.test
                 case AdEvent.INTERSTITIAL_CLOSED:
                     trace('onInterstitial: ad closed');
                     break;
+				case AdEvent.INTERSTITIAL_FINISHED:
+					trace('onInterstitial: ad finished');
+					appodeal.toast('onInterstitial: ad finished');
+					break;
             }
         }
 		
