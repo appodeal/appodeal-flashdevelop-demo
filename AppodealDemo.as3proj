@@ -57,6 +57,9 @@
     <element path="lib\AppodealSupportLib_23.1.2.ane" />
     <element path="lib\AppodealPlayServices.ane" />
     <element path="lib\AppodealSupportLib.ane" />
+    <element path="lib\button.swc" />
+    <element path="lib\CheckBox.swc" />
+    <element path="lib\ComboBox.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>

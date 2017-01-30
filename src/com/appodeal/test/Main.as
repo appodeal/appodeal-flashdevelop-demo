@@ -1,15 +1,19 @@
 package com.appodeal.test
 {
+	import fl.data.DataProvider;
+	import flash.desktop.InteractiveIcon;
 	import flash.desktop.NativeApplication;
 	import flash.display.Bitmap;
 	import flash.events.Event;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
+	import flash.text.TextFormat;
 	import flash.ui.Multitouch;
 	import flash.ui.MultitouchInputMode;
 	import flash.display.SimpleButton;
 	import flash.events.MouseEvent;
+	import flash.text.Font;
 	import com.appodeal.aneplugin.*;
 	import com.appodeal.aneplugin.UserSettings;
 	import com.appodeal.aneplugin.constants.Alcohol;
@@ -18,6 +22,9 @@ package com.appodeal.test
 	import com.appodeal.aneplugin.constants.Relation;
 	import com.appodeal.aneplugin.constants.Smoking;
 	
+	import fl.controls.Button;
+	import fl.controls.ComboBox;
+	import fl.controls.CheckBox;
 	/**
 	 * ...
 	 * @author Appodeal
@@ -25,19 +32,45 @@ package com.appodeal.test
 	[SWF(backgroundColor="0xef3326")]
 	public class Main extends Sprite 
 	{
+		private static const STAGE_WIDTH:int = 480;
+        private static const STAGE_HEIGHT:int = 320;
+		private static const BUTTON_WIDTH:int = 190;
+		private static const BUTTON_HEIGHT:int = 30;
+		private static const PADDING:int = 5;
+		
 		private var appodeal:Appodeal;
 		private var userSettings:UserSettings;
-		private var initializeButton:NetBtn = new NetBtn("Initialize");
-		private var showBannerButton:NetBtn = new NetBtn("Show banner");
-		private var hideBannerButton:NetBtn = new NetBtn("Hide banner");
-		private var showInterstitialButton:NetBtn = new NetBtn("Show interstitial");
-		private var showRewardedVideoButton:NetBtn = new NetBtn("Show rewarded video");
-		private var showInterstitialOrVideoButton:NetBtn = new NetBtn("Show interstitial or video");
-		private var interstitialState:int = 0; //0 - not loaded; 1 - loading; 2 - loaded
+		
+		private var adType:ComboBox = new ComboBox();
+		private var initializeButton:Button = new Button();
+		private var cacheButton:Button = new Button();
+		private var isLoadedButton:Button = new Button();
+		private var isPrecacheButton:Button = new Button();
+		private var showButton:Button = new Button();
+		private var showWithPlacementButton:Button = new Button();
+		private var hideButton:Button = new Button();
+		
+		private var loggingCb:CheckBox = new CheckBox();
+		private var testingCb:CheckBox = new CheckBox();
+		private var autocacheCb:CheckBox = new CheckBox();
+		private var confirmCb:CheckBox = new CheckBox();
+		private var disableSmartBannersCb:CheckBox = new CheckBox();
+		private var disableBannerAnimationCb:CheckBox = new CheckBox();
+		private var disable728x90BannersCb:CheckBox = new CheckBox();
+		private var enableTriggerOnLoadedOnPrecacheCb:CheckBox = new CheckBox();
+		private var disableLocationPermissionCheckCb:CheckBox = new CheckBox();
+		private var disableWriteExternalStorageCheckCb:CheckBox = new CheckBox();
+		
+		[Embed(source="arial.ttf",
+        fontName = "Arial",
+        mimeType = "application/x-font",
+        advancedAntiAliasing="true",
+        embedAsCFF = "false")]
+		private var myFont:Class;
 		
 		public function Main() 
 		{
-			stage.scaleMode = StageScaleMode.SHOW_ALL;
+			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
 			stage.addEventListener(Event.DEACTIVATE, deactivate);
 			
@@ -49,6 +82,12 @@ package com.appodeal.test
 			appodeal = new Appodeal();
 			userSettings = new UserSettings();
 			createUI();
+			
+			var stageWidth:int = stage.stageWidth;
+			var stageHeight:int = stage.stageHeight;
+			scaleX = stageWidth / STAGE_WIDTH;
+			scaleY = stageHeight / STAGE_HEIGHT;
+			//x = -(stageWidth - width) / 2;
 		}
 		
 		private function deactivate(e:Event):void 
@@ -59,27 +98,102 @@ package com.appodeal.test
 		
 		private function createUI():void{
 			
-			var buttons:Array = new Array(initializeButton, showBannerButton, hideBannerButton, showInterstitialButton, showRewardedVideoButton, showInterstitialOrVideoButton);
+			var buttons:Array = new Array(adType, initializeButton, cacheButton, isLoadedButton, isPrecacheButton, showButton, showWithPlacementButton, hideButton);
 			
-			var paddingTop:int = 10;
-			var currentY:int = paddingTop;
-			for (var i:int = 0; i < buttons.length; i++ ){
+			var tf:TextFormat = new TextFormat();
+			tf.font = "Arial";
+			tf.size = 18;
+			tf.color = 0x000000;
+			var currentY:int = PADDING;
+			
+			adType.prompt = "Select Ad Typle";
+			var types:Array = new Array("Banner", "Banner Top", "Banner Bottom", "Interstitial", "Skippable Video", "Rewarded Video", "Interstitial or Video");
+			adType.dataProvider = new DataProvider(types);
+			adType.dropdown.setStyle("cellRenderer", CustomCellRenderer);
+			adType.dropdown.rowHeight = 50;
+			adType.dropdownWidth = 400;
+			adType.dropdown.invalidateList();
+			adType.dropdown.invalidate();
+			//adType.selectedIndex;
+			
+			var xPos:int = PADDING;
+			for(var i:int = 0; i < buttons.length; i++ ){
 				addChild(buttons[i]);
-				var center:int = (stage.stageWidth - buttons[i].width) / 2;
-				buttons[i].x = center;
-				buttons[i].y = currentY;
-				currentY = currentY + buttons[i].height + paddingTop;
+				buttons[i].setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+				buttons[i].setStyle("textFormat", tf);
+				buttons[i].move(xPos, currentY);
+				currentY = currentY + buttons[i].height + PADDING;
 			}
 			
+			initializeButton.label = "Initialize";
+			cacheButton.label = "Cache";
+			isLoadedButton.label = "Is Loaded?";
+			isPrecacheButton.label = "Is Precache?";
+			showButton.label = "Show";
+			showWithPlacementButton.label = "Show With Placement";
+			hideButton.label = "Hide";
+			
+			loggingCb.label = "Logging";
+			testingCb.label = "Testing";
+			autocacheCb.label = "AutoCache";
+			confirmCb.label = "Confirm";
+			disableSmartBannersCb.label = "Disable Smart Banners";
+			disableBannerAnimationCb.label = "Disable Banner Animation";
+			disable728x90BannersCb.label = "Disable 728x90 Banners";
+			enableTriggerOnLoadedOnPrecacheCb.label = "Enable Trigger onLoaded on Precache";
+			disableLocationPermissionCheckCb.label = "Disable Location Permission Check";
+			disableWriteExternalStorageCheckCb.label = "Disable Write External Storage Check";
+			
+			var checkboxes:Array = new Array(loggingCb, testingCb, autocacheCb, confirmCb, disableSmartBannersCb, disableBannerAnimationCb, disable728x90BannersCb, enableTriggerOnLoadedOnPrecacheCb, disableLocationPermissionCheckCb, disableWriteExternalStorageCheckCb);
+			currentY = PADDING;
+			var leftColumn:int = PADDING * 2 + BUTTON_WIDTH;
+			xPos = leftColumn;
+			var lastDouble:int = 3;
+			tf.size = 15;
+			for(var i:int = 0; i < checkboxes.length; i++ ){
+				addChild(checkboxes[i]);
+				var width:int = STAGE_WIDTH - leftColumn - 2 * PADDING;
+				if (i <= lastDouble) width = width / 2;
+				trace("Appodeal. label: ", checkboxes[i].label);
+				trace("Appodeal. width: ", width);
+				checkboxes[i].setSize(width, BUTTON_HEIGHT);
+				checkboxes[i].setStyle("textFormat", tf);
+				checkboxes[i].move(xPos, currentY);
+				if (i > lastDouble)
+				{
+					currentY = currentY + checkboxes[i].height + PADDING;
+					xPos = leftColumn;
+				}
+				else{
+					if (xPos > leftColumn){
+						xPos = leftColumn;
+						trace("Appodeal. 1. xPos: ", xPos);
+						currentY = currentY + checkboxes[i].height + PADDING;
+					}
+					else
+					{
+						xPos = xPos + PADDING + width;
+						trace("Appodeal. 2. xPos: ", xPos);
+					}
+				}
+			}
+			
+			//Cb.selected;
+			
 			initializeButton.addEventListener(MouseEvent.CLICK, initialize);
-			showBannerButton.addEventListener(MouseEvent.CLICK, showBanner);
-			hideBannerButton.addEventListener(MouseEvent.CLICK, hideBanner);
-			showInterstitialButton.addEventListener(MouseEvent.CLICK, showInterstitial);
-			showRewardedVideoButton.addEventListener(MouseEvent.CLICK, showRewarded);
-			showInterstitialOrVideoButton.addEventListener(MouseEvent.CLICK, showInterstitialOrVideo);
+			cacheButton.addEventListener(MouseEvent.CLICK, cache);
+			isLoadedButton.addEventListener(MouseEvent.CLICK, isLoaded);
+			isPrecacheButton.addEventListener(MouseEvent.CLICK, isPrecache);
+			showButton.addEventListener(MouseEvent.CLICK, show);
+			showWithPlacementButton.addEventListener(MouseEvent.CLICK, showWithPlacement);
+			hideButton.addEventListener(MouseEvent.CLICK, hide);
 		}
 		
 		private function initialize(event:MouseEvent):void{
+			appodeal.setLogging(loggingCb.selected);
+			appodeal.setTesting(testingCb.selected);
+			if(confirmCb.selected) appodeal.confirm(getSelectedAdType());
+			
 			//Setting user data
 			userSettings.setAge(25);
             userSettings.setAlcohol(Alcohol.NEUTRAL);
@@ -92,64 +206,80 @@ package com.appodeal.test
             userSettings.setSmoking(Smoking.NEUTRAL);
             userSettings.setUserId("custom_user_id");
 			
-			appodeal.setLogging(true);
-			appodeal.set728x90Banners(false);
-            appodeal.setSmartBanners(false);
-            appodeal.setBannerAnimation(false);
-            appodeal.setBannerBackground(true);
-			appodeal.setAutoCache(Appodeal.INTERSTITIAL, false);
+			appodeal.set728x90Banners(!disable728x90BannersCb.selected);
+            appodeal.setSmartBanners(disableSmartBannersCb.selected);
+            appodeal.setBannerAnimation(!disableBannerAnimationCb.selected);
+			appodeal.setOnLoadedTriggerBoth(getSelectedAdType(), enableTriggerOnLoadedOnPrecacheCb.selected);
+			if (disableLocationPermissionCheckCb.selected)
+				appodeal.disableLocationPermissionCheck();
+			if (disableWriteExternalStorageCheckCb.selected)
+				appodeal.disableWriteExternalStoragePermissionCheck();
 			
-			appodeal.initialize("fee50c333ff3825fd6ad6d38cff78154de3025546d47a84f", AdType.BANNER | AdType.INTERSTITIAL | AdType.REWARDED_VIDEO | AdType.SKIPPABLE_VIDEO);
+			appodeal.setAutoCache(getSelectedAdType(), autocacheCb.selected);
+			
+			appodeal.initialize("fee50c333ff3825fd6ad6d38cff78154de3025546d47a84f", getSelectedAdType());
 			
 			appodeal.addEventListener(AdEvent.INTERSTITIAL_LOADED, onInterstitial);
             appodeal.addEventListener(AdEvent.INTERSTITIAL_FAILED_TO_LOAD, onInterstitial);
             appodeal.addEventListener(AdEvent.INTERSTITIAL_SHOWN, onInterstitial);
             appodeal.addEventListener(AdEvent.INTERSTITIAL_CLICKED, onInterstitial);
             appodeal.addEventListener(AdEvent.INTERSTITIAL_CLOSED, onInterstitial);
+			appodeal.addEventListener(AdEvent.INTERSTITIAL_FINISHED, onInterstitial);
             appodeal.addEventListener(AdEvent.REWARDED_VIDEO_LOADED, onRewardedVideo);
             appodeal.addEventListener(AdEvent.REWARDED_VIDEO_FAILED_TO_LOAD, onRewardedVideo);
             appodeal.addEventListener(AdEvent.REWARDED_VIDEO_SHOWN, onRewardedVideo);
             appodeal.addEventListener(AdEvent.REWARDED_VIDEO_FINISHED, onRewardedVideo);
             appodeal.addEventListener(AdEvent.REWARDED_VIDEO_CLOSED, onRewardedVideo);
-            appodeal.addEventListener(AdEvent.SKIPPABLE_VIDEO_LOADED, onSkippableVideo);
-            appodeal.addEventListener(AdEvent.SKIPPABLE_VIDEO_FAILED_TO_LOAD, onSkippableVideo);
-            appodeal.addEventListener(AdEvent.SKIPPABLE_VIDEO_SHOWN, onSkippableVideo);
-            appodeal.addEventListener(AdEvent.SKIPPABLE_VIDEO_CLOSED, onSkippableVideo);
-            appodeal.addEventListener(AdEvent.SKIPPABLE_VIDEO_FINISHED, onSkippableVideo);
             appodeal.addEventListener(AdEvent.BANNER_LOADED, onBanner);
             appodeal.addEventListener(AdEvent.BANNER_FAILED_TO_LOAD, onBanner);
             appodeal.addEventListener(AdEvent.BANNER_SHOWN, onBanner);
             appodeal.addEventListener(AdEvent.BANNER_CLICKED, onBanner);
 		}
 		
-		private function showBanner(event:MouseEvent):void{
-			appodeal.show(AdType.BANNER_BOTTOM);
-		}
-		
-		private function hideBanner(event:MouseEvent):void{
-			appodeal.hide(AdType.BANNER)
-		}
-		
-		private function showInterstitial(event:MouseEvent):void{
-			if(interstitialState == 0)
-			{
-				appodeal.cache(Appodeal.INTERSTITIAL);
-				interstitialState = 1;
+		private function getSelectedAdType():int{
+			switch( adType.selectedIndex ){
+				case 0:
+					return AdType.BANNER;
+				case 1:
+					return AdType.BANNER_TOP;
+				case 2:
+					return AdType.BANNER_BOTTOM;
+				case 3:
+					return AdType.INTERSTITIAL;
+				case 4:
+					return AdType.SKIPPABLE_VIDEO;
+				case 5:
+					return AdType.REWARDED_VIDEO;
+				case 6:
+					return AdType.INTERSTITIAL | AdType.SKIPPABLE_VIDEO;
+				default:
+					return 0;
 			}
-			if(interstitialState == 2)
-			{
-				appodeal.showWithPlacement(Appodeal.INTERSTITIAL, "interstitial");
-				interstitialState = 0;
-			}
+			
 		}
 		
-		private function showRewarded(event:MouseEvent):void{
-			if(appodeal.isLoaded(Appodeal.REWARDED_VIDEO))
-				appodeal.show(AdType.REWARDED_VIDEO);
+		private function cache(event:MouseEvent):void{
+			appodeal.cache(getSelectedAdType());
 		}
 		
-		private function showInterstitialOrVideo(event:MouseEvent):void{
-			appodeal.show(AdType.INTERSTITIAL | AdType.SKIPPABLE_VIDEO);
+		private function isLoaded(event:MouseEvent):void{
+			trace("is loaded: ", appodeal.isLoaded(getSelectedAdType()));
+		}
+		
+		private function isPrecache(event:MouseEvent):void{
+			trace("is precache: ", appodeal.isPrecache(getSelectedAdType()));
+		}
+		
+		private function show(event:MouseEvent):void{
+			appodeal.show(getSelectedAdType());
+		}
+		
+		private function showWithPlacement(event:MouseEvent):void{
+			appodeal.showWithPlacement(getSelectedAdType(), "main_menu");
+		}
+		
+		private function hide(event:MouseEvent):void{
+			appodeal.hide(getSelectedAdType());
 		}
 		
 		private function onNonSkippableVideo(event:AdEvent):void
@@ -169,26 +299,6 @@ package com.appodeal.test
                     break;
                 case AdEvent.NON_SKIPPABLE_VIDEO_CLOSED:
                     trace('onNonSkippableVideo: ad closed');
-                    break;
-            }
-        }
-        private function onSkippableVideo(event:AdEvent):void
-        {
-            switch (event.type) {
-                case AdEvent.SKIPPABLE_VIDEO_LOADED:
-                    trace('onSkippableVideo: ad loaded');
-                    break;
-                case AdEvent.SKIPPABLE_VIDEO_FAILED_TO_LOAD:
-                    trace('onSkippableVideo: failed to load ad');
-                    break;
-                case AdEvent.SKIPPABLE_VIDEO_SHOWN:
-                    trace('onSkippableVideo: ad shown');
-                    break;
-                case AdEvent.SKIPPABLE_VIDEO_FINISHED:
-                    trace('onSkippableVideo: ad clicked, your reward:', event.amount, event.name);
-                    break;
-                case AdEvent.SKIPPABLE_VIDEO_CLOSED:
-                    trace('onSkippableVideo: ad closed');
                     break;
             }
         }
@@ -250,9 +360,12 @@ package com.appodeal.test
                 case AdEvent.INTERSTITIAL_CLOSED:
                     trace('onInterstitial: ad closed');
                     break;
+				case AdEvent.INTERSTITIAL_FINISHED:
+					trace('onInterstitial: ad finished');
+					appodeal.toast('onInterstitial: ad finished');
+					break;
             }
         }
-		
 	}
 	
 }
