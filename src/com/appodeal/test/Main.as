@@ -154,8 +154,6 @@ package com.appodeal.test
 				addChild(checkboxes[i]);
 				var width:int = STAGE_WIDTH - leftColumn - 2 * PADDING;
 				if (i <= lastDouble) width = width / 2;
-				trace("Appodeal. label: ", checkboxes[i].label);
-				trace("Appodeal. width: ", width);
 				checkboxes[i].setSize(width, BUTTON_HEIGHT);
 				checkboxes[i].setStyle("textFormat", tf);
 				checkboxes[i].move(xPos, currentY);
@@ -207,7 +205,7 @@ package com.appodeal.test
             userSettings.setUserId("custom_user_id");
 			
 			appodeal.set728x90Banners(!disable728x90BannersCb.selected);
-            appodeal.setSmartBanners(disableSmartBannersCb.selected);
+            appodeal.setSmartBanners(!disableSmartBannersCb.selected);
             appodeal.setBannerAnimation(!disableBannerAnimationCb.selected);
 			appodeal.setOnLoadedTriggerBoth(getSelectedAdType(), enableTriggerOnLoadedOnPrecacheCb.selected);
 			if (disableLocationPermissionCheckCb.selected)
